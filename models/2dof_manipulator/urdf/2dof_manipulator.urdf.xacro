@@ -51,22 +51,22 @@
     <child link="Link0_link"/>
   </joint>
 
-  <joint name="Link1_link_joint" type="revolute">
-    <dynamics damping="0.05000"/>
+ <joint name="Link1_link_joint" type="revolute">
+    <dynamics damping="0.01000"/>
     <limit lower="0.00000" upper="3.14000" effort="80.00000" velocity="200.00000"/>
-    <origin rpy="0.00000 0.00000 0.00000" xyz="-0.00000 0.00009 0.20022"/>
+    <origin rpy="0.00000 3.14000 0.00000" xyz="0.00000 0.00009 0.20022"/>
     <parent link="Link0_link"/>
     <child link="Link1_link"/>
-    <axis xyz="0.00000 -1.00000 0.00000"/>
+    <axis xyz="0.00000 1.00000 0.00000"/>
   </joint>
 
   <joint name="Link2_link_joint" type="revolute">
-    <dynamics damping="0.05000"/>
+    <dynamics damping="0.01000"/>
     <limit lower="-2.35500" upper="2.35500" effort="80.00000" velocity="200.00000"/>
-    <origin rpy="0.00000 -0.00000 0.00000" xyz="0.77198 0.00000 -0.00000"/>
+    <origin rpy="0.00000 0.00000 0.00000" xyz="0.77198 0.00000 -0.00000"/>
     <parent link="Link1_link"/>
     <child link="Link2_link"/>
-    <axis xyz="0.00000 -1.00000 0.00000"/>
+    <axis xyz="0.00000 1.00000 0.00000"/>
   </joint>
 
   <joint name="Mass_link_joint" type="fixed">
