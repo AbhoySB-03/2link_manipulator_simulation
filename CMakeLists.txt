@@ -16,7 +16,6 @@ install(DIRECTORY
   launch
   worlds
   models
-  scripts
   DESTINATION share/${PROJECT_NAME}
 )
 
