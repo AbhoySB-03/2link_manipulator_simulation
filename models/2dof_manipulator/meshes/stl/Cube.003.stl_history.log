@@ -1,0 +1,5 @@
+Instantiated with filepath=None->None, scale=[0.09671288728713989, 0.0967128798365593, 0.0967128798365593], mesh=<bpy_struct, Mesh("Cube.003") at 0x7e4a32137e08>, meshname=Cube.003, material=None, mesh_orientation=None
+manually setting mesh_object by value of <class 'bpy_types.Mesh'>
+apply_scale [0.09671288728713989, 0.0967128798365593, 0.0967128798365593]
+->trying export of <bpy_struct, Mesh("Cube.091") at 0x7e4a30d12008> to /home/no0ne/BLENDER/phobos_models/unnamed/meshes/stl/Cube.003.stl
+->wrote stl to /home/no0ne/BLENDER/phobos_models/unnamed/meshes/stl/Cube.003.stl from bpy_types.Mesh

@@ -1,0 +1,231 @@
+<?xml version="1.0" ?>
+<sdf version="1.9">
+  <model name="2dof_manipulator">
+
+    <!-- ========================================== -->
+    <!-- BASE LINK                                  -->
+    <!-- ========================================== -->
+    <link name="base_link">
+      <pose>0 0 0.09581 0 0 0</pose>
+      <inertial>
+        <mass>1000.0</mass>
+        <inertia>
+          <ixx>39.58394</ixx><ixy>0</ixy><ixz>0</ixz>
+          <iyy>39.58394</iyy><iyz>0</iyz><izz>72.97132</izz>
+        </inertia>
+      </inertial>
+      <collision name="Base_collision">
+        <geometry>
+          <box><size>0.66169 0.66169 0.19282</size></box>
+        </geometry>
+      </collision>
+      <visual name="Base_visual">
+        <geometry>
+          <mesh>
+            <uri>model://2dof_manipulator/meshes/stl/Cube.001.stl</uri>
+            <scale>1 1 1</scale>
+          </mesh>
+        </geometry>
+        <material>
+          <diffuse>0.32941 0.43529 0.23922 1.0</diffuse>
+          <specular>0.16 0.21 0.11 1.0</specular>
+        </material>
+      </visual>
+    </link>
+
+    <!-- FIXED BASE -> LINK 0 -->
+    <joint name="Link0_link_joint" type="fixed">
+      <parent>base_link</parent>
+      <child>Link0_link</child>
+    </joint>
+
+    <!-- ========================================== -->
+    <!-- LINK 0 (Turret Base)                       -->
+    <!-- ========================================== -->
+    <link name="Link0_link">
+      <pose relative_to="base_link">0 0 0.14079 0 0 0</pose>
+      <inertial>
+        <pose>0 0 0.13097 0 0 0</pose>
+        <mass>2.0</mass>
+        <inertia>
+          <ixx>0.02820</ixx><ixy>0</ixy><ixz>0</ixz>
+          <iyy>0.02842</iyy><iyz>0</iyz><izz>0.01560</izz>
+        </inertia>
+      </inertial>
+      <collision name="Link0_collision">
+        <pose>0 0 0.13097 0 0 0</pose>
+        <geometry>
+          <box><size>0.21782 0.21478 0.35080</size></box>
+        </geometry>
+      </collision>
+      <visual name="Link0_visual">
+        <geometry>
+          <mesh>
+            <uri>model://2dof_manipulator/meshes/stl/Cube.002.stl</uri>
+            <scale>1 1 1</scale>
+          </mesh>
+        </geometry>
+        <material>
+          <diffuse>0.32941 0.43529 0.23922 1.0</diffuse>
+          <specular>0.16 0.21 0.11 1.0</specular>
+        </material>
+      </visual>
+    </link>
+
+    <!-- REVOLUTE JOINT 1 (SHOULDER) -->
+    <joint name="Link1_link_joint" type="revolute">
+      <pose relative_to="Link0_link">0 0.00009 0.20022 0 0 0</pose>
+      <parent>Link0_link</parent>
+      <child>Link1_link</child>
+      <axis>
+        <xyz>0 -1 0</xyz>
+        <limit>
+          <lower>0.0</lower>
+          <upper>3.14</upper>
+          <effort>500.0</effort>
+          <velocity>200.0</velocity>
+        </limit>
+        <dynamics>
+          <damping>0.05</damping>
+        </dynamics>
+      </axis>
+    </joint>
+
+    <!-- ========================================== -->
+    <!-- LINK 1                                     -->
+    <!-- ========================================== -->
+    <link name="Link1_link">
+      <pose relative_to="Link1_link_joint">0 0 0 0 0 0</pose>
+      <inertial>
+        <pose>0.38255 -0.00056 0.00064 0 0 0</pose>
+        <mass>1.5</mass>
+        <inertia>
+          <ixx>0.00918</ixx><ixy>0</ixy><ixz>0</ixz>
+          <iyy>0.12843</iyy><iyz>0</iyz><izz>0.12478</izz>
+        </inertia>
+      </inertial>
+      <collision name="Link1_collision">
+        <pose>0.38255 -0.00056 0.00064 0 0 0</pose>
+        <geometry>
+          <box><size>0.98799 0.14861 0.22659</size></box>
+        </geometry>
+      </collision>
+      <visual name="Link1_visual">
+        <geometry>
+          <mesh>
+            <uri>model://2dof_manipulator/meshes/stl/Cylinder.003.stl</uri>
+            <scale>1 1 1</scale>
+          </mesh>
+        </geometry>
+        <material>
+          <diffuse>0.27059 0.58431 0.80000 1.0</diffuse>
+          <specular>0.13 0.29 0.40 1.0</specular>
+        </material>
+      </visual>
+    </link>
+
+    <!-- REVOLUTE JOINT 2 (ELBOW) -->
+    <joint name="Link2_link_joint" type="revolute">
+      <pose relative_to="Link1_link">0.77198 0 0 0 0 0</pose>
+      <parent>Link1_link</parent>
+      <child>Link2_link</child>
+      <axis>
+        <xyz>0 -1 0</xyz>
+        <limit>
+          <lower>-2.355</lower>
+          <upper>2.355</upper>
+          <effort>500.0</effort>
+          <velocity>200.0</velocity>
+        </limit>
+        <dynamics>
+          <damping>0.05</damping>
+        </dynamics>
+      </axis>
+    </joint>
+
+    <!-- ========================================== -->
+    <!-- LINK 2                                     -->
+    <!-- ========================================== -->
+    <link name="Link2_link">
+      <pose relative_to="Link2_link_joint">0 0 0 0 0 0</pose>
+      <inertial>
+        <pose>0.29498 -0.00007 -0.00057 0 0 0</pose>
+        <mass>1.0</mass>
+        <inertia>
+          <ixx>0.00453</ixx><ixy>0</ixy><ixz>0</ixz>
+          <iyy>0.05416</iyy><iyz>0</iyz><izz>0.05053</izz>
+        </inertia>
+      </inertial>
+      <collision name="Link2_collision">
+        <pose>0.29498 -0.00007 -0.00057 0 0 0</pose>
+        <geometry>
+          <box><size>0.77523 0.07336 0.22128</size></box>
+        </geometry>
+      </collision>
+      <visual name="Link2_visual">
+        <geometry>
+          <mesh>
+            <uri>model://2dof_manipulator/meshes/stl/Cylinder.004.stl</uri>
+            <scale>1 1 1</scale>
+          </mesh>
+        </geometry>
+        <material>
+          <diffuse>0.57647 0.80000 0.80000 1.0</diffuse>
+          <specular>0.28 0.40 0.40 1.0</specular>
+        </material>
+      </visual>
+    </link>
+
+    <!-- FIXED LINK 2 -> MASS -->
+    <joint name="Mass_link_joint" type="fixed">
+      <pose relative_to="Link2_link">0.77986 -0.00009 0.00289 0 0 0</pose>
+      <parent>Link2_link</parent>
+      <child>Mass_link</child>
+    </joint>
+
+    <!-- ========================================== -->
+    <!-- END-EFFECTOR MASS                          -->
+    <!-- ========================================== -->
+    <link name="Mass_link">
+      <pose relative_to="Mass_link_joint">0 0 0 0 0 0</pose>
+      <inertial>
+        <mass>1.8</mass>
+        <inertia>
+          <ixx>0.01126</ixx><ixy>0</ixy><ixz>0</ixz>
+          <iyy>0.01126</iyy><iyz>0</iyz><izz>0.01126</izz>
+        </inertia>
+      </inertial>
+      <collision name="Mass_collision">
+        <geometry>
+          <box><size>0.19374 0.19374 0.19374</size></box>
+        </geometry>
+      </collision>
+      <visual name="Mass_visual">
+        <geometry>
+          <mesh>
+            <uri>model://2dof_manipulator/meshes/stl/Cube.003.stl</uri>
+            <scale>1 1 1</scale>
+          </mesh>
+        </geometry>
+        <material>
+          <diffuse>0.80000 0.03922 0.05098 1.0</diffuse>
+          <specular>0.40 0.02 0.02 1.0</specular>
+        </material>
+      </visual>
+    </link>
+
+    <!-- ========================================== -->
+    <!-- ROS 2 CONTROL PLUGIN & INTERFACES          -->
+    <!-- ========================================== -->
+    <plugin
+      filename="ign_ros2_control-system"
+      name="ign_ros2_control::IgnitionROS2ControlPlugin">
+      <!-- Direct resolution via model:// URI in native SDF -->
+      <parameters>model://2dof_manipulator/config/manipulator_controllers.yaml</parameters>
+      <ros>
+        <remapping>/controller_manager/robot_description:=/robot_description</remapping>
+      </ros>
+    </plugin>
+
+  </model>
+</sdf>

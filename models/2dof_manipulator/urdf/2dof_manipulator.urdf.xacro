@@ -1,0 +1,417 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="2dof_manipulator">
+
+  <!-- ========================================== -->
+  <!-- XACRO ARGUMENTS & PARAMETERS               -->
+  <!-- ========================================== -->
+  <!-- Target end-effector payload mass (kg) -->
+  <xacro:arg name="payload_mass" default="1.8"/>
+
+  <xacro:property name="mass_payload" value="$(arg payload_mass)"/>
+
+  <!-- Nominal End-Effector Cube Dimensions (from collision box) -->
+  <xacro:property name="payload_side_x" value="0.19374"/>
+  <xacro:property name="payload_side_y" value="0.19374"/>
+  <xacro:property name="payload_side_z" value="0.19374"/>
+
+  <!-- Analytical Cuboid Inertia Matrix:
+       Ixx = (1/12) * m * (y^2 + z^2)
+       Iyy = (1/12) * m * (x^2 + z^2)
+       Izz = (1/12) * m * (x^2 + y^2)
+  -->
+  <xacro:property name="payload_ixx" 
+                  value="${(1.0 / 12.0) * mass_payload * (payload_side_y * payload_side_y + payload_side_z * payload_side_z)}"/>
+  <xacro:property name="payload_iyy" 
+                  value="${(1.0 / 12.0) * mass_payload * (payload_side_x * payload_side_x + payload_side_z * payload_side_z)}"/>
+  <xacro:property name="payload_izz" 
+                  value="${(1.0 / 12.0) * mass_payload * (payload_side_x * payload_side_x + payload_side_y * payload_side_y)}"/>
+
+  <!-- ========================================== -->
+  <!-- MATERIALS                                  -->
+  <!-- ========================================== -->
+  <material name="Base">
+    <color rgba="0.32941 0.43529 0.23922 1.00000"/>
+  </material>
+  <material name="Link">
+    <color rgba="0.27059 0.58431 0.80000 1.00000"/>
+  </material>
+  <material name="Link2">
+    <color rgba="0.57647 0.80000 0.80000 1.00000"/>
+  </material>
+  <material name="Mass">
+    <color rgba="0.80000 0.03922 0.05098 1.00000"/>
+  </material>
+
+  <!-- ========================================== -->
+  <!-- JOINTS                                     -->
+  <!-- ========================================== -->
+  <joint name="Link0_link_joint" type="fixed">
+    <origin rpy="0.00000 0.00000 0.00000" xyz="0.00000 0.00000 0.23660"/>
+    <parent link="base_link"/>
+    <child link="Link0_link"/>
+  </joint>
+
+  <joint name="Link1_link_joint" type="revolute">
+    <dynamics damping="0.05000"/>
+    <limit lower="0.00000" upper="3.14000" effort="80.00000" velocity="200.00000"/>
+    <origin rpy="0.00000 0.00000 0.00000" xyz="-0.00000 0.00009 0.20022"/>
+    <parent link="Link0_link"/>
+    <child link="Link1_link"/>
+    <axis xyz="0.00000 -1.00000 0.00000"/>
+  </joint>
+
+  <joint name="Link2_link_joint" type="revolute">
+    <dynamics damping="0.05000"/>
+    <limit lower="-2.35500" upper="2.35500" effort="80.00000" velocity="200.00000"/>
+    <origin rpy="0.00000 -0.00000 0.00000" xyz="0.77198 0.00000 -0.00000"/>
+    <parent link="Link1_link"/>
+    <child link="Link2_link"/>
+    <axis xyz="0.00000 -1.00000 0.00000"/>
+  </joint>
+
+  <joint name="Mass_link_joint" type="fixed">
+    <origin rpy="0.00000 -0.00000 0.00000" xyz="0.77986 -0.00009 0.00289"/>
+    <parent link="Link2_link"/>
+    <child link="Mass_link"/>
+  </joint>
+
+  <!-- ========================================== -->
+  <!-- LINKS                                      -->
+  <!-- ========================================== -->
+  <!-- BASE LINK -->
+  <link name="base_link">
+    <collision name="Base_collision">
+      <origin rpy="0.00000 0.00000 0.00000" xyz="0.00000 0.00000 0.09581"/>
+      <geometry>
+        <box size="0.66169 0.66169 0.19282"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <inertia ixx="39.58394" ixy="0.00000" ixz="0.00000" iyy="39.58394" iyz="0.00000" izz="72.97132"/>
+      <origin rpy="0.00000 0.00000 0.00000" xyz="0.00000 0.00000 0.09581"/>
+      <mass value="1000.00000"/>
+    </inertial>
+    <visual name="Base">
+      <material name="Base"/>
+      <origin rpy="0.00000 0.00000 0.00000" xyz="0.00000 0.00000 0.09581"/>
+      <geometry>
+        <mesh filename="package://manipulator_simulator/models/2dof_manipulator/meshes/stl/Cube.001.stl" scale="1 1 1"/>
+      </geometry>
+    </visual>
+  </link>
+
+  <!-- LINK 0 -->
+  <link name="Link0_link">
+    <collision name="Link0_collision">
+      <origin rpy="0.00000 0.00000 0.00000" xyz="0.00000 0.00000 0.13097"/>
+      <geometry>
+        <box size="0.21782 0.21478 0.35080"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <inertia ixx="0.02820" ixy="0.00000" ixz="0.00000" iyy="0.02842" iyz="0.00000" izz="0.01560"/>
+      <origin rpy="0.00000 0.00000 0.00000" xyz="0.00000 0.00000 0.13097"/>
+      <mass value="2.00000"/>
+    </inertial>
+    <visual name="Link0">
+      <material name="Base"/>
+      <origin rpy="0.00000 0.00000 0.00000" xyz="0.00000 0.00000 0.00000"/>
+      <geometry>
+        <mesh filename="package://manipulator_simulator/models/2dof_manipulator/meshes/stl/Cube.002.stl" scale="1 1 1"/>
+      </geometry>
+    </visual>
+  </link>
+
+  <!-- LINK 1 -->
+  <link name="Link1_link">
+    <collision name="Link1_collision">
+      <origin rpy="0.00000 0.00000 0.00000" xyz="0.38255 -0.00056 0.00064"/>
+      <geometry>
+        <box size="0.98799 0.14861 0.22659"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <inertia ixx="0.00918" ixy="0.00000" ixz="0.00000" iyy="0.12843" iyz="0.00000" izz="0.12478"/>
+      <origin rpy="0.00000 0.00000 0.00000" xyz="0.38255 -0.00056 0.00064"/>
+      <mass value="1.50000"/>
+    </inertial>
+    <visual name="Link1">
+      <material name="Link"/>
+      <origin rpy="0.00000 0.00000 0.00000" xyz="0.00000 0.00000 -0.00000"/>
+      <geometry>
+        <mesh filename="package://manipulator_simulator/models/2dof_manipulator/meshes/stl/Cylinder.003.stl" scale="1 1 1"/>
+      </geometry>
+    </visual>
+  </link>
+
+  <!-- LINK 2 -->
+  <link name="Link2_link">
+    <collision name="Link2_collision">
+      <origin rpy="0.00000 0.00000 0.00000" xyz="0.29498 -0.00007 -0.00057"/>
+      <geometry>
+        <box size="0.77523 0.07336 0.22128"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <inertia ixx="0.00453" ixy="0.00000" ixz="0.00000" iyy="0.05416" iyz="0.00000" izz="0.05053"/>
+      <origin rpy="0.00000 0.00000 0.00000" xyz="0.29498 -0.00007 -0.00057"/>
+      <mass value="1.00000"/>
+    </inertial>
+    <visual name="Link2">
+      <material name="Link2"/>
+      <origin rpy="0.00000 0.00000 0.00000" xyz="0.00000 -0.00000 -0.00000"/>
+      <geometry>
+        <mesh filename="package://manipulator_simulator/models/2dof_manipulator/meshes/stl/Cylinder.004.stl" scale="1 1 1"/>
+      </geometry>
+    </visual>
+  </link>
+
+  <!-- END-EFFECTOR MASS LINK (PARAMETERIZED) -->
+  <link name="Mass_link">
+    <collision name="Mass_collision">
+      <origin rpy="0.00000 0.00000 0.00000" xyz="0.0 0.0 0.0"/>
+      <geometry>
+        <box size="${payload_side_x} ${payload_side_y} ${payload_side_z}"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0.00000 0.00000 0.00000" xyz="0.0 0.0 0.0"/>
+      <mass value="${mass_payload}"/>
+      <inertia 
+        ixx="${payload_ixx}" ixy="0.0" ixz="0.0" 
+        iyy="${payload_iyy}" iyz="0.0" 
+        izz="${payload_izz}"/>
+    </inertial>
+    <visual name="Mass">
+      <material name="Mass"/>
+      <origin rpy="0.00000 0.00000 0.00000" xyz="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://manipulator_simulator/models/2dof_manipulator/meshes/stl/Cube.003.stl" scale="1 1 1"/>
+      </geometry>
+    </visual>
+  </link>
+
+  <!-- ========================================== -->
+  <!-- IMU FRAMES AT JOINTS                       -->
+  <!-- ========================================== -->
+  <!-- IMU 1: Mounted at Joint 1 axis origin on Link 1 -->
+  <link name="imu_joint1_link"/>
+  <joint name="imu_joint1_joint" type="fixed">
+    <parent link="Link1_link"/>
+    <child link="imu_joint1_link"/>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+  </joint>
+
+  <!-- IMU 2: Mounted at Joint 2 axis origin on Link 2 -->
+  <link name="imu_joint2_link"/>
+  <joint name="imu_joint2_joint" type="fixed">
+    <parent link="Link2_link"/>
+    <child link="imu_joint2_link"/>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+  </joint>
+
+  <!-- ========================================== -->
+  <!-- ROS 2 CONTROL HARDWARE INTERFACES          -->
+  <!-- ========================================== -->
+  <ros2_control name="IgnitionSystem" type="system">
+    <hardware>
+      <plugin>ign_ros2_control/IgnitionSystem</plugin>
+    </hardware>
+
+    <joint name="Link1_link_joint">
+      <command_interface name="effort">
+        <param name="min">-80.0</param>
+        <param name="max">80.0</param>
+      </command_interface>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+
+    <joint name="Link2_link_joint">
+      <command_interface name="effort">
+        <param name="min">-80.0</param>
+        <param name="max">80.0</param>
+      </command_interface>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+  </ros2_control>
+
+  <!-- ========================================== -->
+  <!-- IGNITION ROS 2 CONTROL GAZEBO PLUGIN       -->
+  <!-- ========================================== -->
+  <gazebo>
+    <plugin
+      filename="ign_ros2_control-system"
+      name="ign_ros2_control::IgnitionROS2ControlPlugin">
+      <parameters>$(find manipulator_simulator)/config/manipulator_controllers.yaml</parameters>
+    </plugin>
+  </gazebo>
+
+  <!-- ========================================== -->
+  <!-- GAZEBO IMU SENSORS AT JOINTS               -->
+  <!-- ========================================== -->
+  <!-- IMU on Joint 1 (Measures Link 1 angular rate & orientation) -->
+  <gazebo reference="imu_joint1_link">
+    <sensor name="imu_joint1_sensor" type="imu">
+      <always_on>true</always_on>
+      <update_rate>100</update_rate>
+      <topic>/imu/joint1</topic>
+      <imu>
+        <enable_orientation>1</enable_orientation>
+        <angular_velocity>
+          <x>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>0.2</stddev>
+              <bias_mean>0.0005</bias_mean>
+              <bias_stddev>0.001</bias_stddev>
+            </noise>
+          </x>
+          <y>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>0.2</stddev>
+              <bias_mean>0.0005</bias_mean>
+              <bias_stddev>0.001</bias_stddev>
+            </noise>
+          </y>
+          <z>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>0.2</stddev>
+              <bias_mean>0.001</bias_mean>
+              <bias_stddev>0.001</bias_stddev>
+            </noise>
+          </z>
+        </angular_velocity>
+        <linear_acceleration>
+          <x>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>0.015</stddev>
+              <bias_mean>0.001</bias_mean>
+              <bias_stddev>0.005</bias_stddev>
+            </noise>
+          </x>
+          <y>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>0.015</stddev>
+              <bias_mean>0.001</bias_mean>
+              <bias_stddev>0.005</bias_stddev>
+            </noise>
+          </y>
+          <z>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>0.015</stddev>
+              <bias_mean>0.001</bias_mean>
+              <bias_stddev>0.005</bias_stddev>
+            </noise>
+          </z>
+        </linear_acceleration>
+      </imu>
+    </sensor>
+  </gazebo>
+
+  <!-- IMU on Joint 2 (Measures Link 2 angular rate & orientation) -->
+  <gazebo reference="imu_joint2_link">
+    <sensor name="imu_joint2_sensor" type="imu">
+      <always_on>true</always_on>
+      <update_rate>100</update_rate>
+      <topic>/imu/joint2</topic>
+      <imu>
+        <enable_orientation>1</enable_orientation>
+        <angular_velocity>
+          <x>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>0.2</stddev>
+              <bias_mean>0.0005</bias_mean>
+              <bias_stddev>0.001</bias_stddev>
+            </noise>
+          </x>
+          <y>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>0.2</stddev>
+              <bias_mean>0.0005</bias_mean>
+              <bias_stddev>0.001</bias_stddev>
+            </noise>
+          </y>
+          <z>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>0.2</stddev>
+              <bias_mean>0.001</bias_mean>
+              <bias_stddev>0.001</bias_stddev>
+            </noise>
+          </z>
+        </angular_velocity>
+        <linear_acceleration>
+          <x>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>0.015</stddev>
+              <bias_mean>0.001</bias_mean>
+              <bias_stddev>0.005</bias_stddev>
+            </noise>
+          </x>
+          <y>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>0.015</stddev>
+              <bias_mean>0.001</bias_mean>
+              <bias_stddev>0.005</bias_stddev>
+            </noise>
+          </y>
+          <z>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>0.015</stddev>
+              <bias_mean>0.001</bias_mean>
+              <bias_stddev>0.005</bias_stddev>
+            </noise>
+          </z>
+        </linear_acceleration>
+      </imu>
+    </sensor>
+  </gazebo>
+
+  <!-- ========================================== -->
+  <!-- FORCE / TORQUE SENSORS                     -->
+  <!-- ========================================== -->
+  <gazebo reference="Link1_link_joint">
+    <sensor name="joint_1_torque_sensor" type="force_torque">
+      <always_on>true</always_on>
+      <update_rate>100</update_rate>
+      <topic>/FT_Sensor/joint1</topic>
+      <force_torque>
+        <frame>child</frame>
+        <measure_direction>child_to_parent</measure_direction>
+      </force_torque>
+      <noise type="gaussian">
+        <mean>0.0</mean>
+        <stddev>0.09</stddev>
+      </noise>
+    </sensor>
+  </gazebo>
+
+  <gazebo reference="Link2_link_joint">
+    <sensor name="joint_2_torque_sensor" type="force_torque">
+      <always_on>true</always_on>
+      <update_rate>100</update_rate>
+      <topic>/FT_Sensor/joint2</topic>
+      <force_torque>
+        <frame>child</frame>
+        <measure_direction>child_to_parent</measure_direction>
+      </force_torque>
+      <noise type="gaussian">
+        <mean>0.0</mean>
+        <stddev>0.09</stddev>
+      </noise>
+    </sensor>
+  </gazebo>
+
+</robot>
