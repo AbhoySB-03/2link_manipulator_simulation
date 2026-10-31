@@ -29,7 +29,7 @@ def generate_launch_description():
     models_dir = os.path.join(pkg_share, 'models')
     install_share_parent = os.path.abspath(os.path.join(pkg_share, '..'))
 
-    payload_mass = random.normalvariate(1.8, 0.4)
+    payload_mass = max(0,random.normalvariate(1.8, 0.4))
     print(f"\n\n\n++++++++++ Payload Attached: {payload_mass} Kg ++++++++++ \n\n\n")
     # ----------------------------------------------------
     # 1. Environment Variables for Plugins and Meshes
